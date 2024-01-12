@@ -63,8 +63,8 @@ let pageCenter = window.innerWidth / 2
 if (window.innerWidth < 750) {
     pageCenter = window.innerWidth / 2 + 30
 }
-let StartingX = pageCenter - (numOfBoxes * boxWidth) / 2
 
+let StartingX = pageCenter - (numOfBoxes * boxWidth) / 2
 
 let drawBoxes = () => {
     ctx.fillStyle = 'black'
@@ -123,7 +123,7 @@ let guessBtnWidth = 240
 let guessBtnHeight = 60
 
 let drawGuessBtn = () => {
-    console.log('drawing guess btn')
+    // console.log('drawing guess btn')
     ctx.drawImage(guessBtnImg, pageCenter - 140, window.innerHeight / 2.2, guessBtnWidth, guessBtnHeight)
 
     
@@ -147,13 +147,15 @@ let drawHints = () => {
         ctx.strokeStyle = 'limegreen';
         ctx.lineWidth = 2;
 
-        let xStart = window.innerWidth * 0.05 ;
         
-        let outerBoxWidth = window.innerWidth - 100;
+        // let outerBoxWidth = window.innerWidth - 100;
+        let outerBoxWidth = 550;
+        let xStart = window.innerWidth / 2 - outerBoxWidth / 2 ;
         let hintNumBoxWitdth = 40
         
         if (window.innerWidth < 750) {
             outerBoxWidth = window.innerWidth
+            hintNumBoxWitdth = (window.innerWidth / 2) / 4
             xStart = 0;
         }
 
@@ -169,13 +171,13 @@ let drawHints = () => {
                 if(index === 0) {
                     gap = 0
                 } else if (index === 1) {
-                    gap = 40 
+                    gap = hintNumBoxWitdth 
                 }
                 else if (index === 2) {
-                    gap = 40 * 2
+                    gap = hintNumBoxWitdth * 2
                 }
                 else if (index === 3) {
-                    gap = 40 * 3
+                    gap = hintNumBoxWitdth * 3
                 }
 
 
@@ -183,7 +185,7 @@ let drawHints = () => {
                 if (window.innerWidth < 750) {
                     ctx.strokeRect(xStart  + gap , height , hintNumBoxWitdth, 65);
                 } else {
-                    ctx.strokeRect(xStart + 20 + (index * boxWidth), height + 15, hintNumBoxWitdth, 40);
+                    ctx.strokeRect(xStart + 20 + (index * boxWidth), height + 10, hintNumBoxWitdth, 40);
                 }
             });
             
@@ -203,9 +205,9 @@ let drawHints = () => {
                     gap = hintNumBoxWitdth * 3
                 }
                 if (window.innerWidth < 750) {
-                    ctx.fillText(number, xStart + 15 + gap, height + 35);
+                    ctx.fillText(number, xStart + (hintNumBoxWitdth / 2 - 3 ) + gap, height + 40);
                 } else {
-                    ctx.fillText(number, xStart + 35 + (index * boxWidth), height + 43);
+                    ctx.fillText(number, xStart + 35 + (index * boxWidth), height + 35);
                 }
             });
         };
@@ -219,7 +221,7 @@ let drawHints = () => {
             let hintBoxX
             let hintBoxWidth
             if (window.innerWidth < 750) {
-                hintBoxX =  40*4
+                hintBoxX =  hintNumBoxWitdth*4
                 hintBoxWidth = outerBoxWidth  
                 
             }
@@ -239,39 +241,43 @@ let drawHints = () => {
             // Adjust the y-coordinate of the text based on the screen size
 
         
-            ctx.fillText(text, hintBoxX, height + 40, outerBoxWidth / 2.2, 50);
+            ctx.fillText(text, hintBoxX + 10, height + 40, outerBoxWidth / 2.2, 50);
             ctx.fillStyle = 'green';
         };
         drawTextBox(text, height);
     };
 
     drawHintOuterBox(hintArr1, drawFrom, hintText1)
-    drawHintOuterBox([h2a, h2b, h2c, h2d], drawFrom + 60, hintText2)
-    drawHintOuterBox([h3a, h3b, h3c, h3d], drawFrom + 120 , hintText3)
-    drawHintOuterBox([h4a, h4b, h4c, h4d], drawFrom + 180 , hintText4)
+    drawHintOuterBox([h2a, h2b, h2c, h2d], drawFrom + 70, hintText2)
+    drawHintOuterBox([h3a, h3b, h3c, h3d], drawFrom + 140 , hintText3)
+    drawHintOuterBox([h4a, h4b, h4c, h4d], drawFrom + 210 , hintText4)
 }
 
 let checkAnswer = () => {
-    console.log('checking answer')
+    // console.log('checking answer')
     // Compare the user's guess with the correct answer
     if (guessBox1 === num1 && guessBox2 === num2 && guessBox3 === num3 && guessBox4 === num4) {
         // The guess is correct
         displaySuccessScreen('./assets/cong.jpg');
     } else {
         // The guess is wrong
-        displayImage('./assets/wrong_code.png');
+        displayWrong('./assets/wrong_code.png')
     }
 }
 
-let displayImage = (src) => {
+let displayWrong = (src) => {
     let img = new Image();
     img.src = src;
 
     img.onload = function() {
-        // Draw the image in the center of the canvas
-        let x = (canvas.width - img.width) / 2;
-        let y = (canvas.height - img.height) / 2;
-        ctx.drawImage(img, x, y);
+        let scaleFactor = Math.min(window.innerWidth / img.width, img.height / 3 / img.height);
+        let width = img.width * scaleFactor;
+        let height = img.height * scaleFactor;
+
+        let x = (window.innerWidth - width) / 2;
+        let y = (window.innerHeight - height) / 2;
+
+        ctx.drawImage(img, x, y, width, height);
     }
 }
 
@@ -280,14 +286,14 @@ let drawGuessTheCodeText = () => {
     let img = new Image();
     img.src = './assets/success_bg.png';
 
-    // Draw the image once it's loaded
+
     img.onload = function() {
         ctx.drawImage(img, pageCenter - 240, window.innerHeight /6.8, 440, 100);
 
         // Draw the text over the image
         ctx.fillStyle = 'white';
         ctx.font = '30px bangers';
-        ctx.fillText('WHAT IS THE CODE?', pageCenter - 120, window.innerHeight / 5);
+        ctx.fillText('WHAT IS THE CODE?', pageCenter - 120, window.innerHeight / 6.8 + 50);
     }
 }
 
@@ -296,14 +302,15 @@ let drawScore = () => {
     ctx.strokeStyle = '#28a745';
     ctx.lineWidth = 2;
 
+    let scoreWidth = 130;
+    let scoreHeight = 45;
 
 
-
-    ctx.strokeRect(pageCenter - 95, window.innerHeight / 24, 160, 45);
+    ctx.strokeRect(pageCenter - (scoreWidth / 2 + 30), window.innerHeight / 24, scoreWidth, 46);
 
     ctx.fillStyle = 'white';
     ctx.font = '20px bangers';
-    ctx.fillText(`YOUR SCORE: 100`, pageCenter - 80, window.innerHeight / 14);
+    ctx.fillText(`YOUR SCORE: 100`, pageCenter - (scoreWidth / 2 + 25) , window.innerHeight / 24 + (46 / 1.5) );
 }
 
 let drawRestetBtn = () => {
@@ -322,16 +329,29 @@ let drawLangaugeBtn = () => {
 
     ctx.strokeStyle = '#28a745'
     ctx.lineWidth = 2
-
-    ctx.strokeRect(window.innerWidth * 0.8, 20, 40, 40)
-
     ctx.fillStyle = '#343a40'
 
-    ctx.fillRect(window.innerWidth * 0.8, 20, 40, 40)
+    if(window.innerWidth < 750){
+        ctx.strokeRect(window.innerWidth * 0.8, 20, 30, 30)
+        ctx.fillRect(window.innerWidth * 0.8, 20, 30, 30)
+    } else {
+        ctx.strokeRect(window.innerWidth * 0.8, 20, 40, 40)
+        ctx.fillRect(window.innerWidth * 0.8, 20, 40, 40)
+        
+    }
+    
+
+
 
     ctx.fillStyle = 'white'
-    ctx.font = '20px bangers'
-    ctx.fillText('EN', window.innerWidth * 0.8 + 10, 45)
+    
+    if(window.innerWidth < 750){
+        ctx.font = '16px bangers'
+        ctx.fillText('EN', window.innerWidth * 0.8 + 6, 40)
+    } else {
+        ctx.font = '20px bangers'
+        ctx.fillText('EN', window.innerWidth * 0.8 + 10, 45)
+    }
 
 }
 
@@ -341,9 +361,9 @@ let drawHelpBtn = () => {
 
     img.onload = () => {
         if(window.innerWidth > 759){
-            ctx.drawImage(img, window.innerWidth * 0.8, 80, 40, 40)
+            ctx.drawImage(img, window.innerWidth * 0.80, 80, 40, 40)
         } else {
-            ctx.drawImage(img, window.innerWidth * 0.8, 80, 20, 20)
+            ctx.drawImage(img, window.innerWidth * 0.80, 80, 25, 25)
         }
     }
 }
@@ -395,24 +415,58 @@ let drawSuccessScreenIcons = () => {
         new Promise(resolve => img3.onload = resolve),
         new Promise(resolve => img4.onload = resolve)
     ]).then(() => {
-        ctx.drawImage(img1, pageCenter - 90, window.innerHeight * 0.36, 200, 150);
+        ctx.drawImage(img1, pageCenter - 100 , window.innerHeight * 0.36, 200, 150);
         ctx.drawImage(img2, pageCenter - 200, window.innerHeight * 0.6, 100, 100);
         ctx.drawImage(img3, pageCenter + 50, window.innerHeight * 0.6, 100, 100);
-        // Add the drawImage call for img4 here
-        ctx.drawImage(img4, pageCenter - 200, window.innerHeight * 0.2, 400, 100)
+        ctx.drawImage(img4, pageCenter - 160, window.innerHeight * 0.1, 300, 100)
     });
 };
+
+let displayHelpScreen = false
+
+let displayHelp = () => {
+    let helpImg = new Image()
+    helpImg.src = './assets/help_screen.png'
+
+    let helpWidth
+    let helpHiehgth
+
+    let helpX
+    let helpY
+
+    if(window.innerWidth < 750) {
+        helpWidth = window.innerWidth 
+    
+        helpHiehgth = window.innerHeight / 3    
+    
+        helpX = 0
+        helpY = 0
+        
+    } else {
+        helpWidth = window.innerWidth / 2
+        helpHiehgth = window.innerHeight / 2
+
+        helpX = window.innerWidth / 4
+        helpY = window.innerHeight / 4
+    }
+
+
+    helpImg.onload = () => {
+        ctx.drawImage(helpImg, helpX, helpY, helpWidth, helpHiehgth)
+    }
+    
+}
 
 
 
 let drawGame = () => {
-    // Load the fonts before drawing
+
     Promise.all([
         document.fonts.load('16px bangers'),
         document.fonts.load('18px bangers'),
         document.fonts.load('20px bangers'),
         document.fonts.load('30px bangers')
-        // Add more font sizes as needed
+        
     ]).then(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -427,6 +481,9 @@ let drawGame = () => {
         drawLangaugeBtn()
         drawHelpBtn()
         drawHintsHeading()
+        displayHelpScreen && displayHelp()
+        // displaySuccessScreen('./assets/cong.jpg')
+        
     });
 };
 
@@ -452,32 +509,32 @@ canvas.addEventListener('click', function(event) {
     let x = event.clientX;
     let y = event.clientY;
 
-    console.log(`x: ${x} y: ${y}`)
+    // console.log(`x: ${x} y: ${y}`)
     
     
     
     // Check if click is within bounds of any arrow
     if (y >= window.innerHeight / 3 - 60 && y <= window.innerHeight / 3) {
         if (x >= pageCenter - 185 && x <= pageCenter - 165) {
-            console.log('Arrow 1 clicked')
+            // console.log('Arrow 1 clicked')
             if (guessBox1 < 9) {
                 guessBox1++
             }
             
         } else if (x >= pageCenter -85 && x <= pageCenter - 65) {
-            console.log('Arrow 2 clicked')
+            // console.log('Arrow 2 clicked')
             if (guessBox2 < 9) {
                 guessBox2++
             }
             
         } else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
-            console.log('Arrow 3 clicked')
+            // console.log('Arrow 3 clicked')
             if (guessBox3 < 9) {
                 guessBox3++
             }
             
         } else if (x >= pageCenter + 115 && x <= pageCenter + 135) {
-            console.log('Arrow 4 clicked')
+            // console.log('Arrow 4 clicked')
             if (guessBox4 < 9) {
                 guessBox4++
             }
@@ -488,9 +545,9 @@ canvas.addEventListener('click', function(event) {
     
     if (y >= window.innerHeight / 3 + 40 && y <= window.innerHeight / 3 + 80) {
         if (x >= pageCenter - 185 && x <= pageCenter - 165) {
-            console.log('Arrow 1 clicked')
+            // console.log('Arrow 1 clicked')
             if (guessBox1 > 0) {
-                guessBox1--
+            guessBox1--
             }
             
         } else if (x >= pageCenter - 85 && x <= pageCenter - 65) {
@@ -500,12 +557,12 @@ canvas.addEventListener('click', function(event) {
             }
             
         } else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
-            console.log('Arrow 3 clicked')
+            // console.log('Arrow 3 clicked')
             if (guessBox3 > 0) {
                 guessBox3--
             }            
         } else if (x >= pageCenter + 115 && x <= pageCenter + 135) {
-            console.log('Arrow 4 clicked')
+            // console.log('Arrow 4 clicked')
             if (guessBox4 > 0) {
                 guessBox4--
             }
@@ -516,23 +573,43 @@ canvas.addEventListener('click', function(event) {
 
     // if user clicks on guess button
     if (x >= pageCenter - 140 && x <= pageCenter - 140 + guessBtnWidth && y >= window.innerHeight / 2.2 && y <= window.innerHeight / 2.2 + guessBtnHeight) {
-        console.log('Guess button clicked')
+        // console.log('Guess button clicked')
         checkAnswer()
     }
+
+    // if help button is clicked
+
+    let btnWidth, btnHeight;
+
+    if (window.innerWidth > 759) {
+        btnWidth = btnHeight = 40;
+    } else {
+        btnWidth = btnHeight = 25;
+    }
+    
+    if (x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 80 && y <= 80 + btnHeight) {
+        // console.log('Help button clicked')
+        displayHelpScreen = true;
+    } else if (displayHelpScreen === true) {
+        displayHelpScreen = false;
+    }
+
 
     // if user clicks on reset button
 
     if (x >= window.innerWidth * 0.1 && x <= window.innerWidth * 0.1 + 80 && y >= 20 && y <= 20 + 80) {
-        console.log('Reset button clicked')
+        // console.log('Reset button clicked')
         window.location.reload()
     }
 
     if(gameWon === true) {
         if (x >= pageCenter - 90 && x <= pageCenter + 110 && y >= window.innerHeight * 0.36 && y <= window.innerHeight * 0.36 + 150) {
-            console.log('Next button clicked')
+            // console.log('Next button clicked')
             window.location.reload()
         }
     }
+
+   
     
     
 
@@ -549,3 +626,4 @@ drawGame()
 
 
 
+  
