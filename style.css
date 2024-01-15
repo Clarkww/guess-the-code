@@ -12,11 +12,20 @@
     /* hide all overflow */
     overflow: hidden;
 
-    /* make font sharper */
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    
 
     
 
+}
+
+@media only screen and (max-height: 665px) {
+    body {
+        zoom: 0.75;
+        -moz-transform: scaleY(0.95); /* For Mozilla Firefox */
+        -webkit-transform: scaleY(0.95); /* For Webkit browser */
+        transform: scaleY(0.95); /* For both of above browser */
+    }
 }

@@ -1,11 +1,101 @@
 
 
+
+let data
+
+let numbersToGuess 
+
+let num1
+let num2
+let num3
+let num4
+
+let hint1Arr
+let hint2Arr
+let hint3Arr
+let hint4Arr
+let hint5Arr
+
+let hint1Text
+let hint2Text
+let hint3Text
+let hint4Text
+let hint5Text
+
+
+let score = localStorage.getItem('score') || 0
+
+console.log()
+
+let urlScore = parseInt(score) + 1
+
+// console.log(urlScore)
+
+let wrongGuesses = 0
+
+let url = `https://www.crack-the-code.com/code/${urlScore}/`
+
+// console.log(url)
+
+ let request = new XMLHttpRequest();
+ request.open('GET', url, false);  // `false` makes the request synchronous
+ request.send(null);
+ 
+ if (request.status === 200) {
+    data = JSON.parse(request.responseText)
+
+    numbersToGuess = data.numberToGuess
+        if (numbersToGuess >= 2){
+            num1 = data.guessCode[0]
+            num2 = data.guessCode[1]
+        } 
+        if (numbersToGuess >= 3){
+            num3 = data.guessCode[2]
+        }
+        if (numbersToGuess === 4){
+            num4 = data.guessCode[3]
+        }
+
+        // console.log(data.hints)
+
+        // we need the length of data.hints it is a object
+
+        let hintsLength = Object.keys(data.hints).length
+
+        // console.log(hintsLength)
+
+
+        if (data.hints.nothingCorrect !== undefined) {
+            hint1Text = "Nothing Is Correct"
+            hint1Arr = data.hints.nothingCorrect
+        }
+
+
+        if (data.hints.oneCorrectAndWellPlaced !== undefined) {
+            hint2Text = "One Number is Correct and Well Placed"
+            hint2Arr = data.hints.oneCorrectAndWellPlaced
+
+        }
+        if (data.hints.oneCorrectButWronglyPlaced !== undefined) {
+            hint3Text = "One Number is Correct but Wrong Placed"
+            hint3Arr = data.hints.oneCorrectButWronglyPlaced
+
+        }
+        if (data.hints.twoCorrectAndWellPlaced !== undefined) {
+            hint4Text = "Two Numbers are Correct and Well Placed"
+            hint4Arr = data.hints.twoCorrectAndWellPlaced
+
+        }
+        if (data.hints.twoCorrectButWronglyPlaced !== undefined) {
+            hint5Text = "Two Numbers are Correct but Wrongly Placed"
+            hint5Arr = data.hints.twoCorrectButWronglyPlaced
+
+        }
+ }
+
 const canvas = document.getElementById('canvas')
 
-let num1 = Math.floor(Math.random() * 9)
-let num2 = Math.floor(Math.random() * 9)
-let num3 = Math.floor(Math.random() * 9)
-let num4 = Math.floor(Math.random() * 9)
+
 
 let guessBox1 = 0
 let guessBox2 = 0
@@ -13,39 +103,6 @@ let guessBox3 = 0
 let guessBox4 = 0
 
 let gameWon = false
-
-
-// hint number generation
-
-let h1a, h1b, h1c, h1d
-while ((h1a = Math.floor(Math.random() * 10)) === num1) {}
-while ((h1b = Math.floor(Math.random() * 10)) === num2) {}
-while ((h1c = Math.floor(Math.random() * 10)) === num3) {}
-h1d = num4
-
-let h2a, h2b, h2c, h2d
-while ((h2a = Math.floor(Math.random() * 10)) === num1){}
-while ((h2b = Math.floor(Math.random() * 10)) === num2){}
-h2c = num2
-while ((h2d = Math.floor(Math.random() * 10)) === num4){}
-
-let h3a, h3b, h3c, h3d
-h3a = num3
-h3b = num4
-while ((h3c = Math.floor(Math.random() * 10)) === num3){}
-while ((h3d = Math.floor(Math.random() * 10)) === num4){}
-
-let h4a, h4b, h4c, h4d
-h4a = num1
-while ((h4b = Math.floor(Math.random() * 10)) === num2){}
-h4c = num3
-while ((h4d = Math.floor(Math.random() * 10)) === num4){}
-
-
-
-
-console.log(`The answer is ${num1}${num2}${num3}${num4}`)
-
 
 const ctx = canvas.getContext('2d')
 
@@ -66,38 +123,100 @@ if (window.innerWidth < 750) {
 
 let StartingX = pageCenter - (numOfBoxes * boxWidth) / 2
 
+
 let drawBoxes = () => {
+    
     ctx.fillStyle = 'black'
 
-    
     // Draw the guess boxes
     ctx.strokeStyle = 'limegreen'
     ctx.lineWidth = 2
     ctx.fillStyle = '#0a2403'
 
-    for (let i = 0; i < numOfBoxes; i++) {
-        ctx.strokeRect(pageCenter - 200 + (i * 100), window.innerHeight / 3, boxWidth, boxHeight)
-        ctx.fillRect(pageCenter - 200 + (i * 100), window.innerHeight / 3, boxWidth, boxHeight)
+    if(numbersToGuess === 2) {
+        ctx.strokeRect(pageCenter - 100, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter - 100, window.innerHeight / 3, boxWidth, boxHeight)
+
+        ctx.strokeRect(pageCenter, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter, window.innerHeight / 3, boxWidth, boxHeight)
     }
+
+    if(numbersToGuess === 3) {
+        ctx.strokeRect(pageCenter - 150, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter - 150, window.innerHeight / 3, boxWidth, boxHeight)
+
+        ctx.strokeRect(pageCenter - 50, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter - 50, window.innerHeight / 3, boxWidth, boxHeight)
+
+        ctx.strokeRect(pageCenter + 50, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter + 50, window.innerHeight / 3, boxWidth, boxHeight)
+    }
+
+    if(numbersToGuess === 4) {
+
+        ctx.strokeRect(pageCenter - 200, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter - 200, window.innerHeight / 3, boxWidth, boxHeight)
+
+        ctx.strokeRect(pageCenter - 100, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter - 100, window.innerHeight / 3, boxWidth, boxHeight)
+
+        ctx.strokeRect(pageCenter, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter, window.innerHeight / 3, boxWidth, boxHeight)
+
+        ctx.strokeRect(pageCenter + 100, window.innerHeight / 3, boxWidth, boxHeight)
+        ctx.fillRect(pageCenter + 100, window.innerHeight / 3, boxWidth, boxHeight)
+
+    }
+
+
     
     // Add the text of the guess boxes
     ctx.font = '20px bangers'
     ctx.fillStyle = 'white'
-    ctx.fillText(guessBox1, pageCenter - 180, window.innerHeight / 3 + 30)
-    ctx.fillText(guessBox2, pageCenter - 80, window.innerHeight / 3 + 30)
-    ctx.fillText(guessBox3, pageCenter + 20, window.innerHeight / 3 + 30)
-    ctx.fillText(guessBox4, pageCenter + 120, window.innerHeight / 3 + 30)
+
+    if(numbersToGuess === 2) {
+        ctx.fillText(guessBox1, pageCenter - 80, window.innerHeight / 3 + 30)
+        ctx.fillText(guessBox2, pageCenter + 20, window.innerHeight / 3 + 30)
+    }
+
+    if(numbersToGuess === 3) {
+        ctx.fillText(guessBox1, pageCenter - 130, window.innerHeight / 3 + 30)
+        ctx.fillText(guessBox2, pageCenter - 30, window.innerHeight / 3 + 30)
+        ctx.fillText(guessBox3, pageCenter + 70, window.innerHeight / 3 + 30)
+    }
+    if(numbersToGuess === 4) {
+        ctx.fillText(guessBox1, pageCenter - 180, window.innerHeight / 3 + 30)
+        ctx.fillText(guessBox2, pageCenter - 80, window.innerHeight / 3 + 30)
+        ctx.fillText(guessBox3, pageCenter + 20, window.innerHeight / 3 + 30)
+        ctx.fillText(guessBox4, pageCenter + 120, window.innerHeight / 3 + 30)
+    }
+
+
 }
 
 let drawTopArrows = () => {
     ctx.fillStyle = '#d7ff93'
     ctx.font = '20px bangers'
     // arrow text symbol
+
+    if(numbersToGuess === 2) {
+        ctx.fillText('▲', pageCenter - 85, window.innerHeight / 3 - 20)
+        ctx.fillText('▲', pageCenter + 15, window.innerHeight / 3 - 20)
+    }
+
+    if(numbersToGuess === 3) {
+        ctx.fillText('▲', pageCenter - 135, window.innerHeight / 3 - 20)
+        ctx.fillText('▲', pageCenter - 35, window.innerHeight / 3 - 20)
+        ctx.fillText('▲', pageCenter + 65, window.innerHeight / 3 - 20)
+    }
+
+    if(numbersToGuess === 4) {
+        ctx.fillText('▲', pageCenter - 185, window.innerHeight / 3 - 20)
+        ctx.fillText("▲", pageCenter - 85, window.innerHeight / 3 - 20)
+        ctx.fillText("▲", pageCenter + 15, window.innerHeight / 3 - 20)
+        ctx.fillText("▲", pageCenter + 115, window.innerHeight / 3 - 20)
+    }
     
-    ctx.fillText('▲', pageCenter - 185, window.innerHeight / 3 - 20)
-    ctx.fillText("▲", pageCenter - 85, window.innerHeight / 3 - 20)
-    ctx.fillText("▲", pageCenter + 15, window.innerHeight / 3 - 20)
-    ctx.fillText("▲", pageCenter + 115, window.innerHeight / 3 - 20)
 }
 
 let drawBottomArrows = () => {
@@ -105,163 +224,339 @@ let drawBottomArrows = () => {
     ctx.fillStyle = '#d7ff93'
     ctx.font = '20px bangers'
 
-    // arrow text symbol
-    ctx.fillText("▼", pageCenter - 185, window.innerHeight / 3 + 80)
-    ctx.fillText("▼", pageCenter - 85, window.innerHeight / 3 + 80)
-    ctx.fillText("▼", pageCenter + 15, window.innerHeight / 3 + 80)
-    ctx.fillText("▼", pageCenter + 115, window.innerHeight / 3 + 80)
+    if(numbersToGuess === 2) {
+        ctx.fillText('▼', pageCenter - 85, window.innerHeight / 3 + 80)
+        ctx.fillText('▼', pageCenter + 15, window.innerHeight / 3 + 80)
+    }
+
+    if(numbersToGuess === 3) {
+        ctx.fillText('▼', pageCenter - 135, window.innerHeight / 3 + 80)
+        ctx.fillText('▼', pageCenter - 35, window.innerHeight / 3 + 80)
+        ctx.fillText('▼', pageCenter + 65, window.innerHeight / 3 + 80)
+    }
+
+    if(numbersToGuess === 4) {
+        ctx.fillText('▼', pageCenter - 185, window.innerHeight / 3 + 80)
+        ctx.fillText("▼", pageCenter - 85, window.innerHeight / 3 + 80)
+        ctx.fillText("▼", pageCenter + 15, window.innerHeight / 3 + 80)
+        ctx.fillText("▼", pageCenter + 115, window.innerHeight / 3 + 80)
+    }
+
 }
 
-let guessBtnImg = new Image()
-guessBtnImg.src = './assets/check_btn.png'
-
-guessBtnImg.onload = () => {
-    drawGame()
-}
 
 let guessBtnWidth = 240
 let guessBtnHeight = 60
+let guessBtnImg = new Image()
+guessBtnImg.src = './assets/check_btn.png'
 
 let drawGuessBtn = () => {
-    // console.log('drawing guess btn')
-    ctx.drawImage(guessBtnImg, pageCenter - 140, window.innerHeight / 2.2, guessBtnWidth, guessBtnHeight)
 
+    if (guessBtnImg.complete) {
+        ctx.drawImage(guessBtnImg, pageCenter - 140, window.innerHeight / 2.2, guessBtnWidth, guessBtnHeight);
+    } else {
+        guessBtnImg.onload = () => {
+            ctx.drawImage(guessBtnImg, pageCenter - 140, window.innerHeight / 2.2, guessBtnWidth, guessBtnHeight)
+            
+        }
+
+    }
     
-
 }
-
-
 
 
 let drawHints = () => {
-    let hintText1 = "One Number is Correct and Well Placed"
-    let hintText2 = "One Number is Correct but Wrong Placed"
-    let hintText3 = "Two Numbers are Correct but Wrong Placed"
-    let hintText4 = "Two Numbers are Correct and Well Placed"
 
-    ctx.fillStyle = 'white'
-    let hintArr1 = [h1a, h1b, h1c, h1d]
+    if (window.innerHeight > 680) {
 
-    let drawFrom = window.innerHeight / 1.65
-    let drawHintOuterBox = (numbers, height, text) => {
-        ctx.strokeStyle = 'limegreen';
-        ctx.lineWidth = 2;
-
-        
-        // let outerBoxWidth = window.innerWidth - 100;
-        let outerBoxWidth = 550;
-        let xStart = window.innerWidth / 2 - outerBoxWidth / 2 ;
-        let hintNumBoxWitdth = 40
-        
-        if (window.innerWidth < 750) {
-            outerBoxWidth = window.innerWidth
-            hintNumBoxWitdth = (window.innerWidth / 2) / 4
-            xStart = 0;
-        }
-
-        ctx.strokeRect(xStart, height, outerBoxWidth, 65);
-
-        let drawInnerBoxes = (numbers, height) => {
-            ctx.strokeStyle = 'green';
+        ctx.fillStyle = 'white'
+        // let hintArr1 = [h1a, h1b, h1c, h1d]
+    
+        let drawFrom = window.innerHeight / 1.65
+        let drawHintOuterBox = (numbers, height, text) => {
+            ctx.strokeStyle = 'limegreen';
             ctx.lineWidth = 2;
-
-            // Draw a box around each number
-            numbers.forEach((number, index) => {
-                let gap
-                if(index === 0) {
-                    gap = 0
-                } else if (index === 1) {
-                    gap = hintNumBoxWitdth 
-                }
-                else if (index === 2) {
-                    gap = hintNumBoxWitdth * 2
-                }
-                else if (index === 3) {
-                    gap = hintNumBoxWitdth * 3
-                }
-
-
-
-                if (window.innerWidth < 750) {
-                    ctx.strokeRect(xStart  + gap , height , hintNumBoxWitdth, 65);
-                } else {
-                    ctx.strokeRect(xStart + 20 + (index * boxWidth), height + 10, hintNumBoxWitdth, 40);
-                }
-            });
+    
             
-            ctx.fillStyle = 'white';
-            ctx.font = '20px bangers';
-            numbers.forEach((number, index) => {
-                let gap
-                if(index === 0) {
-                    gap = 0
-                } else if (index === 1) {
-                    gap = hintNumBoxWitdth
-                }
-                else if (index === 2) {
-                    gap = hintNumBoxWitdth * 2
-                }
-                else if (index === 3) {
-                    gap = hintNumBoxWitdth * 3
-                }
-                if (window.innerWidth < 750) {
-                    ctx.fillText(number, xStart + (hintNumBoxWitdth / 2 - 3 ) + gap, height + 40);
-                } else {
-                    ctx.fillText(number, xStart + 35 + (index * boxWidth), height + 35);
-                }
-            });
-        };
-        drawInnerBoxes(numbers, height);
-
-        let drawTextBox = (text, height) => {
-            ctx.fillStyle = 'green';
-        
-
-            let y = height
-            let hintBoxX
-            let hintBoxWidth
+            // let outerBoxWidth = window.innerWidth - 100;
+            let outerBoxWidth = 550;
+            let xStart = window.innerWidth / 2 - outerBoxWidth / 2 ;
+            let hintNumBoxWitdth = 40
+            
             if (window.innerWidth < 750) {
-                hintBoxX =  hintNumBoxWitdth*4
-                hintBoxWidth = outerBoxWidth  
+                outerBoxWidth = window.innerWidth
+                hintNumBoxWitdth = (window.innerWidth / 2) / 4
+                xStart = 0;
+            }
+    
+            ctx.strokeRect(xStart, height, outerBoxWidth, 65);
+    
+            let drawInnerBoxes = (numbers, height) => {
+                ctx.strokeStyle = 'green';
+                ctx.lineWidth = 2;
+    
+                // Draw a box around each number
+                numbers.forEach((number, index) => {
+                    let gap
+                    if(index === 0) {
+                        gap = 0
+                    } else if (index === 1) {
+                        gap = hintNumBoxWitdth 
+                    }
+                    else if (index === 2) {
+                        gap = hintNumBoxWitdth * 2
+                    }
+                    else if (index === 3) {
+                        gap = hintNumBoxWitdth * 3
+                    }
+    
+    
+    
+                    if (window.innerWidth < 750) {
+                        ctx.strokeRect(xStart  + gap , height , hintNumBoxWitdth, 65);
+                    } else {
+                        ctx.strokeRect(xStart + 20 + (index * boxWidth), height + 10, hintNumBoxWitdth, 40);
+                    }
+                });
                 
-            }
-            else if (window.innerWidth > 750) {
-                hintBoxX = xStart + (outerBoxWidth / 2) 
-                hintBoxWidth = outerBoxWidth / 2
-            }
+                ctx.fillStyle = 'white';
+                ctx.font = '20px bangers';
+                numbers.forEach((number, index) => {
+                    let gap
+                    if(index === 0) {
+                        gap = 0
+                    } else if (index === 1) {
+                        gap = hintNumBoxWitdth
+                    }
+                    else if (index === 2) {
+                        gap = hintNumBoxWitdth * 2
+                    }
+                    else if (index === 3) {
+                        gap = hintNumBoxWitdth * 3
+                    }
+                    if (window.innerWidth < 750) {
+                        ctx.fillText(number, xStart + (hintNumBoxWitdth / 2 - 3 ) + gap, height + 40);
+                    } else {
+                        ctx.fillText(number, xStart + 35 + (index * boxWidth), height + 35);
+                    }
+                });
+            };
+            drawInnerBoxes(numbers, height);
+    
+            let drawTextBox = (text, height) => {
+                ctx.fillStyle = 'green';
+            
+    
+                let y = height
+                let hintBoxX
+                let hintBoxWidth
+                if (window.innerWidth < 750) {
+                    hintBoxX =  hintNumBoxWitdth*4
+                    hintBoxWidth = outerBoxWidth  
+                    
+                }
+                else if (window.innerWidth > 750) {
+                    hintBoxX = xStart + (outerBoxWidth / 2) 
+                    hintBoxWidth = outerBoxWidth / 2
+                }
 
-
-
-        
-            ctx.fillRect(hintBoxX, y, hintBoxWidth, 65);
-        
-            ctx.fillStyle = 'white';
-            ctx.font = '18px bangers';
-        
-            // Adjust the y-coordinate of the text based on the screen size
-
-        
-            ctx.fillText(text, hintBoxX + 10, height + 40, outerBoxWidth / 2.2, 50);
-            ctx.fillStyle = 'green';
+                ctx.fillRect(hintBoxX, y, hintBoxWidth, 65);
+            
+                ctx.fillStyle = 'white';
+                ctx.font = '18px bangers';
+            
+                // Adjust the y-coordinate of the text based on the screen size
+    
+            
+                ctx.fillText(text, hintBoxX + 10, height + 40, outerBoxWidth / 2.2, 50);
+                ctx.fillStyle = 'green';
+            };
+            drawTextBox(text, height);
         };
-        drawTextBox(text, height);
-    };
+    
+        console.log(hint1Arr)
+        console.log(hint2Arr)
+        console.log(hint3Arr)
+        console.log(hint4Arr)
+    
+        if (hint1Arr) {
+            drawHintOuterBox(hint1Arr, drawFrom, hint1Text);
+        }
+        if (hint2Arr) {
+            drawHintOuterBox(hint2Arr, drawFrom + 70, hint2Text);
+        }
+        if (hint3Arr) {
+            drawHintOuterBox(hint3Arr, drawFrom + 140, hint3Text);
+        }
+        if (hint4Arr) {
+            drawHintOuterBox(hint4Arr, drawFrom + 210, hint4Text);
+        }
+        if (hint5Arr) {
+            drawHintOuterBox(hint5Arr, drawFrom + 280, hint5Text);
+        }
+    } else {
+        // drawing boxes for smaller screen height
 
-    drawHintOuterBox(hintArr1, drawFrom, hintText1)
-    drawHintOuterBox([h2a, h2b, h2c, h2d], drawFrom + 70, hintText2)
-    drawHintOuterBox([h3a, h3b, h3c, h3d], drawFrom + 140 , hintText3)
-    drawHintOuterBox([h4a, h4b, h4c, h4d], drawFrom + 210 , hintText4)
+        ctx.fillStyle = 'white'
+    
+        let drawFrom = window.innerHeight / 1.65
+        let drawHintOuterBox = (numbers, height, text) => {
+            ctx.strokeStyle = 'limegreen';
+            ctx.lineWidth = 2;
+    
+            
+            let outerBoxWidth = 550;
+            let xStart = window.innerWidth / 2 - outerBoxWidth / 2 ;
+            let hintNumBoxWitdth = 40
+            
+            if (window.innerWidth < 750) {
+                outerBoxWidth = window.innerWidth
+                hintNumBoxWitdth = (window.innerWidth / 2) / 4
+                xStart = 0;
+            }
+    
+            ctx.strokeRect(xStart, height, outerBoxWidth, 50);
+    
+            let drawInnerBoxes = (numbers, height) => {
+                ctx.strokeStyle = 'green';
+                ctx.lineWidth = 2;
+    
+                // Draw a box around each number
+                numbers.forEach((number, index) => {
+                    let gap
+                    if(index === 0) {
+                        gap = 0
+                    } else if (index === 1) {
+                        gap = hintNumBoxWitdth 
+                    }
+                    else if (index === 2) {
+                        gap = hintNumBoxWitdth * 2
+                    }
+                    else if (index === 3) {
+                        gap = hintNumBoxWitdth * 3
+                    }
+    
+    
+    
+                    if (window.innerWidth < 750) {
+                        ctx.strokeRect(xStart  + gap , height , hintNumBoxWitdth, 50);
+                    } else {
+                        ctx.strokeRect(xStart + 20 + (index * boxWidth), height + 10, hintNumBoxWitdth, 40);
+                    }
+                });
+                
+                ctx.fillStyle = 'white';
+                ctx.font = '20px bangers';
+                numbers.forEach((number, index) => {
+                    let gap
+                    if(index === 0) {
+                        gap = 0
+                    } else if (index === 1) {
+                        gap = hintNumBoxWitdth
+                    }
+                    else if (index === 2) {
+                        gap = hintNumBoxWitdth * 2
+                    }
+                    else if (index === 3) {
+                        gap = hintNumBoxWitdth * 3
+                    }
+                    if (window.innerWidth < 750) {
+                        ctx.fillText(number, xStart + (hintNumBoxWitdth / 2 - 3 ) + gap, height + 30);
+                    } else {
+                        ctx.fillText(number, xStart + 35 + (index * boxWidth), height + 35);
+                    }
+                });
+            };
+            drawInnerBoxes(numbers, height);
+    
+            let drawTextBox = (text, height) => {
+                ctx.fillStyle = 'green';
+            
+    
+                let y = height
+                let hintBoxX
+                let hintBoxWidth
+                if (window.innerWidth < 750) {
+                    hintBoxX =  hintNumBoxWitdth*4
+                    hintBoxWidth = outerBoxWidth  
+                    
+                }
+                else if (window.innerWidth > 750) {
+                    hintBoxX = xStart + (outerBoxWidth / 2) 
+                    hintBoxWidth = outerBoxWidth / 2
+                }
+    
+    
+    
+            
+                ctx.fillRect(hintBoxX, y, hintBoxWidth, 50);
+            
+                ctx.fillStyle = 'white';
+                ctx.font = '18px bangers';
+            
+                // Adjust the y-coordinate of the text based on the screen size
+    
+            
+                ctx.fillText(text, hintBoxX + 10, height + 30, outerBoxWidth / 2.2, 30);
+                ctx.fillStyle = 'green';
+            };
+            drawTextBox(text, height);
+        };
+    
+
+    
+        if (hint1Arr) {
+            drawHintOuterBox(hint1Arr, drawFrom, hint1Text);
+        }
+        if (hint2Arr) {
+            drawHintOuterBox(hint2Arr, drawFrom + 50, hint2Text);
+        }
+        if (hint3Arr) {
+            drawHintOuterBox(hint3Arr, drawFrom + 100, hint3Text);
+        }
+        if (hint4Arr) {
+            drawHintOuterBox(hint4Arr, drawFrom + 150, hint4Text);
+        }
+        if (hint5Arr) {
+            drawHintOuterBox(hint5Arr, drawFrom + 200, hint5Text);
+        }
+    }
+
 }
 
 let checkAnswer = () => {
-    // console.log('checking answer')
     // Compare the user's guess with the correct answer
-    if (guessBox1 === num1 && guessBox2 === num2 && guessBox3 === num3 && guessBox4 === num4) {
+    if (numbersToGuess === 2 && guessBox1 === num1 && guessBox2 === num2) {
         // The guess is correct
-        displaySuccessScreen('./assets/cong.jpg');
+        displaySuccessScreen('./assets/cong.jpg')
+        gameWon = true
+        score++
+        localStorage.setItem('score', score)
+    } else if (numbersToGuess === 3 && guessBox1 === num1 && guessBox2 === num2 && guessBox3 === num3) {
+        // The guess is correct
+        displaySuccessScreen('./assets/cong.jpg')
+        gameWon = true
+        score++
+        localStorage.setItem('score', score)
+    } else if (numbersToGuess === 4 && guessBox1 === num1 && guessBox2 === num2 && guessBox3 === num3 && guessBox4 === num4) {
+        // The guess is correct
+        displaySuccessScreen('./assets/cong.jpg')
+        gameWon = true
+        score++
+        localStorage.setItem('score', score)
     } else {
         // The guess is wrong
         displayWrong('./assets/wrong_code.png')
+        wrongGuesses++
+        if (wrongGuesses === 2) {
+            // The user has lost the game
+            displaySuccessScreen('./assets/lost.jpg')
+            if (score > 0) {
+                score--
+                localStorage.setItem('score', score)
+            }
+            window.location.reload()
+        }
     }
 }
 
@@ -280,21 +575,28 @@ let displayWrong = (src) => {
         ctx.drawImage(img, x, y, width, height);
     }
 }
+let textBgImg = new Image();
+textBgImg.src = './assets/success_bg.png';
 
 let drawGuessTheCodeText = () => {
-    // Load the image
-    let img = new Image();
-    img.src = './assets/success_bg.png';
 
 
-    img.onload = function() {
-        ctx.drawImage(img, pageCenter - 240, window.innerHeight /6.8, 440, 100);
+    if(textBgImg.complete) {
+        ctx.drawImage(textBgImg, pageCenter - 240, window.innerHeight /6.8, 440, 100);
+    }else {
+        textBgImg.onload = function() {
+            ctx.drawImage(textBgImg, pageCenter - 240, window.innerHeight /6.8, 440, 100);
+            ctx.fillStyle = 'white';
+            ctx.font = '30px bangers';
+            ctx.fillText('WHAT IS THE CODE?', pageCenter - 120, window.innerHeight / 6.8 + 50)
+        }
 
-        // Draw the text over the image
-        ctx.fillStyle = 'white';
-        ctx.font = '30px bangers';
-        ctx.fillText('WHAT IS THE CODE?', pageCenter - 120, window.innerHeight / 6.8 + 50);
     }
+
+
+    ctx.fillStyle = 'white';
+    ctx.font = '30px bangers';
+    ctx.fillText('WHAT IS THE CODE?', pageCenter - 120, window.innerHeight / 6.8 + 50);
 }
 
 let drawScore = () => {
@@ -310,18 +612,25 @@ let drawScore = () => {
 
     ctx.fillStyle = 'white';
     ctx.font = '20px bangers';
-    ctx.fillText(`YOUR SCORE: 100`, pageCenter - (scoreWidth / 2 + 25) , window.innerHeight / 24 + (46 / 1.5) );
+    ctx.fillText(`YOUR SCORE: ${score}`, pageCenter - (scoreWidth / 2 + 25) , window.innerHeight / 24 + (46 / 1.5) );
 }
 
-let drawRestetBtn = () => {
-    let img = new Image()
-    img.src = './assets/logo-removebg-preview.png'
+let resetBtnImg = new Image()
+resetBtnImg.src = './assets/logo-removebg-preview.png'
 
-    img.onload = () => {
-        let imgWidth = window.innerWidth < 750 ? 40 : 80;
-        let imgHeight = window.innerWidth < 750 ? 40 : 80;
-        ctx.drawImage(img, window.innerWidth * 0.1, 20, imgWidth, imgHeight);
+let drawRestetBtn = () => {
+    let imgWidth = window.innerWidth < 750 ? 40 : 80;
+    let imgHeight = window.innerWidth < 750 ? 40 : 80;
+
+    if(resetBtnImg.complete) {
+        ctx.drawImage(resetBtnImg, window.innerWidth * 0.1, 20, imgWidth, imgHeight);
+    } else {
+        resetBtnImg.onload = () => {
+            ctx.drawImage(resetBtnImg, window.innerWidth * 0.1, 20, imgWidth, imgHeight);
+        }
+
     }
+
 
 }
 
@@ -355,26 +664,42 @@ let drawLangaugeBtn = () => {
 
 }
 
+let helpBtnImg = new Image()
+helpBtnImg.src = './assets/help.png'
 let drawHelpBtn = () => {
-    let img = new Image()
-    img.src = './assets/help.png'
 
-    img.onload = () => {
+    if(helpBtnImg.complete) {
         if(window.innerWidth > 759){
-            ctx.drawImage(img, window.innerWidth * 0.80, 80, 40, 40)
+            ctx.drawImage(helpBtnImg, window.innerWidth * 0.80, 80, 40, 40)
         } else {
-            ctx.drawImage(img, window.innerWidth * 0.80, 80, 25, 25)
+            ctx.drawImage(helpBtnImg, window.innerWidth * 0.80, 80, 25, 25)
         }
+    } else {
+        helpBtnImg.onload = () => {
+            if(window.innerWidth > 759){
+                ctx.drawImage(helpBtnImg, window.innerWidth * 0.80, 80, 40, 40)
+            } else {
+                ctx.drawImage(helpBtnImg, window.innerWidth * 0.80, 80, 25, 25)
+            }
+        }
+
     }
+
 }
+let hintHeadingImg = new Image()
+hintHeadingImg.src = './assets/hints.png'
 
 let drawHintsHeading = () => { 
-    let img = new Image()
-    img.src = './assets/hints.png'
 
-    img.onload = () => {
-        ctx.drawImage(img, pageCenter - 300, window.innerHeight * 0.54, 500, 50)
+    if(hintHeadingImg.complete) {
+        ctx.drawImage(hintHeadingImg, pageCenter - 300, window.innerHeight * 0.54, 500, 50)
+    } else {
+        hintHeadingImg.onload = () => {
+            ctx.drawImage(hintHeadingImg, pageCenter - 300, window.innerHeight * 0.54, 500, 50)
+        }
+
     }
+
 }
 
 let displaySuccessScreen = (src) => {
@@ -482,98 +807,173 @@ let drawGame = () => {
         drawHelpBtn()
         drawHintsHeading()
         displayHelpScreen && displayHelp()
-        // displaySuccessScreen('./assets/cong.jpg')
-        
+
     });
 };
-
-// let drawGame = () => {
-//     ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-//     drawBoxes()
-//     drawTopArrows()
-//     drawBottomArrows()
-//     drawGuessBtn()
-//     drawHints()
-//     drawGuessTheCodeText()
-//     drawScore()
-//     drawRestetBtn()
-//     drawLangaugeBtn()
-//     drawHelpBtn()
-// }
-
-// displaySuccessScreen('./assets/cong.jpg')
 
 
 canvas.addEventListener('click', function(event) {
     let x = event.clientX;
     let y = event.clientY;
 
-    // console.log(`x: ${x} y: ${y}`)
-    
-    
-    
-    // Check if click is within bounds of any arrow
-    if (y >= window.innerHeight / 3 - 60 && y <= window.innerHeight / 3) {
-        if (x >= pageCenter - 185 && x <= pageCenter - 165) {
-            // console.log('Arrow 1 clicked')
-            if (guessBox1 < 9) {
-                guessBox1++
+    if (numbersToGuess === 2) {
+        if (y >= window.innerHeight / 3 - 60 && y <= window.innerHeight / 3) {
+            if (x >= pageCenter - 85 && x <= pageCenter - 65) {
+                // console.log('Arrow 1 clicked')
+                if (guessBox1 < 9) {
+                    guessBox1++
+                }
+                
             }
-            
-        } else if (x >= pageCenter -85 && x <= pageCenter - 65) {
-            // console.log('Arrow 2 clicked')
-            if (guessBox2 < 9) {
-                guessBox2++
+            else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
+                // console.log('Arrow 2 clicked')
+                if (guessBox2 < 9) {
+                    guessBox2++
+                }
+                
             }
-            
-        } else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
-            // console.log('Arrow 3 clicked')
-            if (guessBox3 < 9) {
-                guessBox3++
-            }
-            
-        } else if (x >= pageCenter + 115 && x <= pageCenter + 135) {
-            // console.log('Arrow 4 clicked')
-            if (guessBox4 < 9) {
-                guessBox4++
-            }
-            
-            
         }
-    }
-    
-    if (y >= window.innerHeight / 3 + 40 && y <= window.innerHeight / 3 + 80) {
-        if (x >= pageCenter - 185 && x <= pageCenter - 165) {
-            // console.log('Arrow 1 clicked')
-            if (guessBox1 > 0) {
-            guessBox1--
+
+        if (y >= window.innerHeight / 3 + 40 && y <= window.innerHeight / 3 + 80) {
+            if (x >= pageCenter - 85 && x <= pageCenter - 65) {
+                // console.log('Arrow 1 clicked')
+                if (guessBox1 > 0) {
+                guessBox1--
+                }
+                
             }
-            
-        } else if (x >= pageCenter - 85 && x <= pageCenter - 65) {
-            console.log('Arrow 2 clicked')
-            if (guessBox2 > 0) {
-                guessBox2--
+            else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
+                console.log('Arrow 2 clicked')
+                if (guessBox2 > 0) {
+                    guessBox2--
+                }
+                
             }
-            
-        } else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
-            // console.log('Arrow 3 clicked')
-            if (guessBox3 > 0) {
-                guessBox3--
-            }            
-        } else if (x >= pageCenter + 115 && x <= pageCenter + 135) {
-            // console.log('Arrow 4 clicked')
-            if (guessBox4 > 0) {
-                guessBox4--
-            }
-            
-            
         }
     }
 
+    if (numbersToGuess === 3) {
+
+        if (y >= window.innerHeight / 3 - 60 && y <= window.innerHeight / 3) {
+
+            if (x >= pageCenter - 135 && x <= pageCenter - 115) {
+                // console.log('Arrow 1 clicked')
+                if (guessBox1 < 9) {
+                    guessBox1++
+                }
+                
+            }
+            else if (x >= pageCenter - 35 && x <= pageCenter - 15) {
+                // console.log('Arrow 2 clicked')
+                if (guessBox2 < 9) {
+                    guessBox2++
+                }
+                
+            }
+            else if (x >= pageCenter + 65 && x <= pageCenter + 85) {
+                // console.log('Arrow 3 clicked')
+                if (guessBox3 < 9) {
+                    guessBox3++
+                }
+                
+            }
+        }
+
+        if (y >= window.innerHeight / 3 + 40 && y <= window.innerHeight / 3 + 80) {
+            if (x >= pageCenter - 135 && x <= pageCenter - 115) {
+                // console.log('Arrow 1 clicked')
+                if (guessBox1 > 0) {
+                guessBox1--
+                }
+                
+            }
+            else if (x >= pageCenter - 35 && x <= pageCenter - 15) {
+                console.log('Arrow 2 clicked')
+                if (guessBox2 > 0) {
+                    guessBox2--
+                }
+                
+            }
+            else if (x >= pageCenter + 65 && x <= pageCenter + 85) {
+                // console.log('Arrow 3 clicked')
+                if (guessBox3 > 0) {
+                    guessBox3--
+                }
+                
+            }
+        }
+    }
+
+    if (numbersToGuess === 4) {
+            
+            if (y >= window.innerHeight / 3 - 60 && y <= window.innerHeight / 3) {
+    
+                if (x >= pageCenter - 185 && x <= pageCenter - 165) {
+                    // console.log('Arrow 1 clicked')
+                    if (guessBox1 < 9) {
+                        guessBox1++
+                    }
+                    
+                }
+                else if (x >= pageCenter - 85 && x <= pageCenter - 65) {
+                    // console.log('Arrow 2 clicked')
+                    if (guessBox2 < 9) {
+                        guessBox2++
+                    }
+                    
+                }
+                else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
+                    // console.log('Arrow 3 clicked')
+                    if (guessBox3 < 9) {
+                        guessBox3++
+                    }
+                    
+                }
+                else if (x >= pageCenter + 115 && x <= pageCenter + 135) {
+                    // console.log('Arrow 4 clicked')
+                    if (guessBox4 < 9) {
+                        guessBox4++
+                    }
+                    
+                    
+                }
+            }
+    
+            if (y >= window.innerHeight / 3 + 40 && y <= window.innerHeight / 3 + 80) {
+                if (x >= pageCenter - 185 && x <= pageCenter - 165) {
+                    // console.log('Arrow 1 clicked')
+                    if (guessBox1 > 0) {
+                    guessBox1--
+                    }
+                    
+                }
+                else if (x >= pageCenter - 85 && x <= pageCenter - 65) {
+                    console.log('Arrow 2 clicked')
+                    if (guessBox2 > 0) {
+                        guessBox2--
+                    }
+                    
+                }
+                else if (x >= pageCenter + 15 && x <= pageCenter + 35) {
+                    // console.log('Arrow 3 clicked')
+                    if (guessBox3 > 0) {
+                        guessBox3--
+                    }            
+                }
+                else if (x >= pageCenter + 115 && x <= pageCenter + 135) {
+                    // console.log('Arrow 4 clicked')
+                    if (guessBox4 > 0) {
+                        guessBox4--
+                    }
+                    
+                    
+                }
+            }
+        }
+
+
     // if user clicks on guess button
     if (x >= pageCenter - 140 && x <= pageCenter - 140 + guessBtnWidth && y >= window.innerHeight / 2.2 && y <= window.innerHeight / 2.2 + guessBtnHeight) {
-        // console.log('Guess button clicked')
         checkAnswer()
     }
 
@@ -601,29 +1001,18 @@ canvas.addEventListener('click', function(event) {
         // console.log('Reset button clicked')
         window.location.reload()
     }
+    if(gameWon === false) {
+        drawGame()
+    }
 
     if(gameWon === true) {
-        if (x >= pageCenter - 90 && x <= pageCenter + 110 && y >= window.innerHeight * 0.36 && y <= window.innerHeight * 0.36 + 150) {
+        displaySuccessScreen('./assets/cong.jpg')
+        if (x >= pageCenter - 140 && x <= pageCenter + 160 && y >= window.innerHeight * 0.36 && y <= window.innerHeight * 0.36 + 100) {
             // console.log('Next button clicked')
             window.location.reload()
         }
     }
-
-   
-    
-    
-
-    
-    drawGame()
     
 });
 
 drawGame()
-
-
-
-
-
-
-
-  
