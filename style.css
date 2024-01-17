@@ -6,26 +6,28 @@
 * {
     margin: 0;
     padding: 0;
-    background-color: black;
-    background-image: url('https://img.freepik.com/free-photo/green-gradient-abstract-background-empty-room-with-space-your-text-picture_1258-117938.jpg?size=626&ext=jpg&ga=GA1.1.142706108.1702002543&semt=ais');
-    background-size: cover;
+    /* background-color: black; */
+    /* background-repeat: no-repeat; */
     /* hide all overflow */
-    overflow: hidden;
-
-
+    overflow-x: hidden;
+    
+    
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     
-
     
+    
+    
+    
+}
+
+body {
+    min-height: 115vh;
+    width: 100%;
+    background-image: url('https://img.freepik.com/free-photo/green-gradient-abstract-background-empty-room-with-space-your-text-picture_1258-117938.jpg?size=626&ext=jpg&ga=GA1.1.142706108.1702002543&semt=ais');
+    background-size: cover;
+    /* background-size: ; */
+    /* background-repeat: no-repeat; */
 
 }
 
-@media only screen and (max-height: 665px) {
-    body {
-        zoom: 0.75;
-        -moz-transform: scaleY(0.95); /* For Mozilla Firefox */
-        -webkit-transform: scaleY(0.95); /* For Webkit browser */
-        transform: scaleY(0.95); /* For both of above browser */
-    }
-}
