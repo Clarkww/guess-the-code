@@ -29,7 +29,7 @@ console.log()
 
 let urlScore = parseInt(score) + 1
 
-// let urlScore = 10
+// let urlScore = 8
 
 // console.log(urlScore)
 
@@ -50,12 +50,15 @@ let url = `https://www.crack-the-code.com/code/${urlScore}/`
         if (numbersToGuess >= 2){
             num1 = data.guessCode[0]
             num2 = data.guessCode[1]
+            console.log(`${num1} ${num2}`)
         } 
         if (numbersToGuess >= 3){
             num3 = data.guessCode[2]
+            console.log(`${num1} ${num2} ${num3}`)
         }
         if (numbersToGuess === 4){
             num4 = data.guessCode[3]
+            console.log(`${num1} ${num2} ${num3} ${num4}`)
         }
 
 
@@ -398,8 +401,7 @@ let drawHints = () => {
     
             ctx.strokeRect(xStart, height, outerBoxWidth, 65);
             // transparent black
-            ctx.fillStyle = '#0a2403';
-
+            ctx.fillStyle = 'rgba(10, 36, 3, 0.3)';
             ctx.fillRect(xStart, height, outerBoxWidth, 65);
 
     
@@ -532,10 +534,10 @@ let drawHints = () => {
             drawTextBox(text, height);
         };
     
-        console.log(hint1Arr)
-        console.log(hint2Arr)
-        console.log(hint3Arr)
-        console.log(hint4Arr)
+        // console.log(hint1Arr)
+        // console.log(hint2Arr)
+        // console.log(hint3Arr)
+        // console.log(hint4Arr)
     
         if (hint1Arr) {
             drawHintOuterBox(hint1Arr, drawFrom, hint1Text);
@@ -602,11 +604,11 @@ let displayWrong = (src) => {
 
     img.onload = function() {
         let scaleFactor = Math.min(window.innerWidth / img.width, img.height / 3 / img.height);
-        let width = img.width * scaleFactor;
-        let height = img.height * scaleFactor;
+        let width = (img.width * scaleFactor) * 1.4;
+        let height = (img.height * scaleFactor)* 1.4;
 
-        let x = (window.innerWidth - width) / 2;
-        let y = (window.innerHeight - height) / 2;
+        let x = (window.innerWidth - width) / 2.3;
+        let y = (window.innerHeight - height) / 3.1;
 
         ctx.drawImage(img, x, y, width, height);
     }
@@ -661,10 +663,10 @@ let drawScore = () => {
     }
 
     if(scoreBg.complete) {
-        ctx.drawImage(scoreBg, pageCenter - (scoreWidth / 2 + 35), window.innerHeight / 24, scoreWidth, scoreHeight);
+        ctx.drawImage(scoreBg, pageCenter - (scoreWidth / 2 + 25), window.innerHeight / 24, scoreWidth, scoreHeight);
     } else {
         scoreBg.onload = () => {
-            ctx.drawImage(scoreBg, pageCenter - (scoreWidth / 2 + 35), window.innerHeight / 24, scoreWidth, scoreHeight);
+            ctx.drawImage(scoreBg, pageCenter - (scoreWidth / 2 + 25), window.innerHeight / 24, scoreWidth, scoreHeight);
             ctx.fillStyle = 'white';
             ctx.font = font;
             ctx.fillText(`YOUR SCORE: ${score}`, textStartX , window.innerHeight / 24 + (46 / 1.7) )
@@ -701,6 +703,8 @@ let drawRestetBtn = () => {
 let langBg = new Image()
 langBg.src = './assets/lang-bg.png'
 
+let currentLang = 'en' 
+
 
 let drawLangaugeBtn = () => {
 
@@ -716,7 +720,7 @@ let drawLangaugeBtn = () => {
             langBg.onload = () => {
                 ctx.drawImage(langBg, window.innerWidth * 0.8, 20, 40, 40)
                 ctx.font = '16px bangers'
-                ctx.fillText('EN', window.innerWidth * 0.8 + 12, 45)
+                ctx.fillText(currentLang, window.innerWidth * 0.8 + 12, 45)
             }
         }
     } else {
@@ -726,7 +730,7 @@ let drawLangaugeBtn = () => {
             langBg.onload = () => {
                 ctx.drawImage(langBg, window.innerWidth * 0.79, 20, 60, 60)
                 ctx.font = '20px bangers'
-                ctx.fillText('EN', window.innerWidth * 0.8 + 10, 55)
+                ctx.fillText(currentLang, window.innerWidth * 0.8 + 10, 55)
             }
         }
 
@@ -739,10 +743,101 @@ let drawLangaugeBtn = () => {
     
     if(window.innerWidth < 750){
         ctx.font = '16px bangers'
-        ctx.fillText('EN', window.innerWidth * 0.8 + 12, 45)
+        ctx.fillText(currentLang, window.innerWidth * 0.8 + 12, 45)
     } else {
         ctx.font = '20px bangers'
-        ctx.fillText('EN', window.innerWidth * 0.8 + 10, 55)
+        ctx.fillText(currentLang, window.innerWidth * 0.8 + 10, 55)
+    }
+
+}
+
+let showLanguageToggle = false
+
+let toggleBg = new Image()
+toggleBg.src = './assets/toggle-bg.png'
+
+let enIng = new Image()
+enIng.src = './assets/en.png'
+
+let frImg = new Image()
+frImg.src = './assets/fr.png'
+
+let esImg = new Image()
+esImg.src = './assets/es.png'
+
+
+
+let drawLangaugeToggle = () => {
+
+    // we need to draw under the toggle button first bg, then the images going down in a row withing the bg
+
+    if(window.innerWidth < 750){
+        if(toggleBg.complete) {
+            ctx.drawImage(toggleBg, window.innerWidth * 0.8, 55, 40, 110)
+        } else {
+            toggleBg.onload = () => {
+                ctx.drawImage(toggleBg, window.innerWidth * 0.8, 55, 40, 110)
+            }
+        }
+
+        if(enIng.complete) {
+            ctx.drawImage(enIng, window.innerWidth * 0.8 + 5, 60, 30, 25)
+        } else {
+            enIng.onload = () => {
+                ctx.drawImage(enIng, window.innerWidth * 0.8 + 5, 60, 30, 25)
+            }
+        }
+        if(frImg.complete) {
+            ctx.drawImage(frImg, window.innerWidth * 0.8 + 5, 90, 30, 25)
+        } else {
+            frImg.onload = () => {
+                ctx.drawImage(frImg, window.innerWidth * 0.8 + 5, 90, 30, 25)
+            }
+        }
+
+        if(esImg.complete) {
+            ctx.drawImage(esImg, window.innerWidth * 0.8 + 5, 120, 30, 25)
+        } else {
+            esImg.onload = () => {
+                ctx.drawImage(esImg, window.innerWidth * 0.8 + 5, 120, 30, 25)
+            }
+        }
+    }
+
+
+
+     else {
+        if(toggleBg.complete) {
+            ctx.drawImage(toggleBg, window.innerWidth * 0.79, 70, 60, 140)
+        } else {
+            toggleBg.onload = () => {
+                ctx.drawImage(toggleBg, window.innerWidth * 0.79, 70, 60, 140)
+            }
+        }
+
+        if (enIng.complete) {
+            ctx.drawImage(enIng, window.innerWidth * 0.8 , 80, 40, 30)
+        } else {
+            enIng.onload = () => {
+                ctx.drawImage(enIng, window.innerWidth * 0.8 , 80, 40, 30)
+            }
+        }
+
+        if (frImg.complete) {
+            ctx.drawImage(frImg, window.innerWidth * 0.8 , 120, 40, 30)
+        } else {
+            frImg.onload = () => {
+                ctx.drawImage(frImg, window.innerWidth * 0.8, 120, 40, 30)
+            }
+        }
+
+        if (esImg.complete) {
+            ctx.drawImage(esImg, window.innerWidth * 0.8 , 160, 40, 30)
+        } else {
+            esImg.onload = () => {
+                ctx.drawImage(esImg, window.innerWidth * 0.8 , 160, 40, 30)
+            }
+        }
     }
 
 }
@@ -775,10 +870,10 @@ hintHeadingImg.src = './assets/hints.png'
 let drawHintsHeading = () => { 
 
     if(hintHeadingImg.complete) {
-        ctx.drawImage(hintHeadingImg, pageCenter - 300, window.innerHeight * 0.54, 500, 50)
+        ctx.drawImage(hintHeadingImg, pageCenter - 290, window.innerHeight * 0.54, 500, 50)
     } else {
         hintHeadingImg.onload = () => {
-            ctx.drawImage(hintHeadingImg, pageCenter - 300, window.innerHeight * 0.54, 500, 50)
+            ctx.drawImage(hintHeadingImg, pageCenter - 290, window.innerHeight * 0.54, 500, 50)
         }
 
     }
@@ -786,23 +881,22 @@ let drawHintsHeading = () => {
 }
 
 let displaySuccessScreen = (src) => {
-    let img = new Image();
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
+    let img = new Image()
     img.src = src;
-
+    
     img.onload = function() {
-
         let x = (canvas.width - img.width) / 2;
         let y = (canvas.height - img.height) / 2;
         ctx.drawImage(img, x, y);
+
+        drawSuccessScreenIcons();
     }
-
-    
-
-    drawSuccessScreenIcons()
 }
 
 let drawSuccessScreenIcons = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     let img1 = new Image();
     img1.src = './assets/next.png'
@@ -892,17 +986,21 @@ let drawGame = () => {
         drawScore();
         drawRestetBtn()
         drawLangaugeBtn()
-        drawHelpBtn()
+        !showLanguageToggle && drawHelpBtn()
         drawHintsHeading()
         displayHelpScreen && displayHelp()
+        showLanguageToggle && drawLangaugeToggle()
 
     });
 };
 
+let successScreenDisplayed = false
+
 
 canvas.addEventListener('click', function(event) {
-    let x = event.clientX;
-    let y = event.clientY;
+    let rect = canvas.getBoundingClientRect()
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
 
     if (numbersToGuess === 2) {
         if (y >= window.innerHeight / 3 - 60 && y <= window.innerHeight / 3) {
@@ -1075,12 +1173,60 @@ canvas.addEventListener('click', function(event) {
         btnWidth = btnHeight = 25;
     }
     
-    if (x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 80 && y <= 80 + btnHeight) {
+    if (showLanguageToggle === false && x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 80 && y <= 80 + btnHeight) {
         // console.log('Help button clicked')
         displayHelpScreen = true;
     } else if (displayHelpScreen === true) {
         displayHelpScreen = false;
     }
+
+    // if language button is clicked
+
+    if(window.innerWidth < 750) {
+        if (x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 20 && y <= 20 + btnHeight) {
+            // console.log('Language button clicked')
+            showLanguageToggle = !showLanguageToggle
+        }
+    
+        if (showLanguageToggle === true && x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 60 && y <= 60 + btnHeight) {
+            // English button clicked
+            currentLang = 'en'
+        }
+        
+        if (showLanguageToggle === true && x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 90 && y <= 90 + btnHeight) {
+            // French button clicked
+            currentLang = 'fr'
+        }
+        
+        if (showLanguageToggle === true && x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 120 && y <= 120 + btnHeight) {
+            // Spanish button clicked
+            currentLang = 'es'
+        }
+        
+    } else {
+        if (x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 20 && y <= 20 + btnHeight) {
+            // console.log('Language button clicked')
+            showLanguageToggle = !showLanguageToggle
+        }
+
+        if (showLanguageToggle === true && x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 80 && y <= 80 + btnHeight) {
+            // English button clicked
+            currentLang = 'en'
+        }
+
+        if (showLanguageToggle === true && x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 120 && y <= 120 + btnHeight) {
+            // French button clicked
+            currentLang = 'fr'
+        }
+
+        if (showLanguageToggle === true && x >= window.innerWidth * 0.80 && x <= window.innerWidth * 0.80 + btnWidth && y >= 160 && y <= 160 + btnHeight) {
+            // Spanish button clicked
+            currentLang = 'es'
+        }
+
+    }
+
+
 
     
     
@@ -1093,11 +1239,16 @@ canvas.addEventListener('click', function(event) {
     if(gameWon === false) {
         drawGame()
     }
+
+
     
     if(gameWon === true) {
         displaySuccessScreen('./assets/cong.jpg')
-        if (x >= pageCenter - 140 && x <= pageCenter + 160 && y >= window.innerHeight * 0.36 && y <= window.innerHeight * 0.36 + 100) {
-            // console.log('Next button clicked')
+        setTimeout(function() {
+            successScreenDisplayed = true;
+        }, 1000)
+        if (successScreenDisplayed === true && x >= pageCenter - 140 && x <= pageCenter + 160 && y >= window.innerHeight * 0.36 && y <= window.innerHeight * 0.36 + 100) {
+            console.log('Next button clicked')
             window.location.reload()
         }
     }
