@@ -1,7 +1,7 @@
 
 
 
-let data
+// let data
 
 let numbersToGuess 
 
@@ -27,71 +27,109 @@ let score = localStorage.getItem('score') || 0
 
 console.log()
 
-let urlScore = parseInt(score) + 1
+// let urlScore = parseInt(score) + 1
 
-// let urlScore = 8
+// // let urlScore = 28
 
-// console.log(urlScore)
+// // console.log(urlScore)
 
 let wrongGuesses = 0
 
-let url = `https://www.crack-the-code.com/code/${urlScore}/`
+// let url = `https://www.crack-the-code.com/code/${urlScore}/`
 
-// console.log(url)
+// // console.log(url)
 
- let request = new XMLHttpRequest();
- request.open('GET', url, false);  // `false` makes the request synchronous
- request.send(null);
+//  let request = new XMLHttpRequest();
+//  request.open('GET', url, false);  // `false` makes the request synchronous
+//  request.send(null);
  
- if (request.status === 200) {
-    data = JSON.parse(request.responseText)
+//  if (request.status === 200) {
+//     data = JSON.parse(request.responseText)
 
-    numbersToGuess = data.numberToGuess
-        if (numbersToGuess >= 2){
-            num1 = data.guessCode[0]
-            num2 = data.guessCode[1]
-            console.log(`${num1} ${num2}`)
-        } 
-        if (numbersToGuess >= 3){
-            num3 = data.guessCode[2]
-            console.log(`${num1} ${num2} ${num3}`)
-        }
-        if (numbersToGuess === 4){
-            num4 = data.guessCode[3]
-            console.log(`${num1} ${num2} ${num3} ${num4}`)
-        }
-
-
-        if (data.hints.nothingCorrect !== undefined) {
-            hint1Text = "Nothing Is Correct"
-            hint1Arr = data.hints.nothingCorrect
-        }
+//     numbersToGuess = data.numberToGuess
+//         if (numbersToGuess >= 2){
+//             num1 = data.guessCode[0]
+//             num2 = data.guessCode[1]
+//             console.log(`${num1} ${num2}`)
+//         } 
+//         if (numbersToGuess >= 3){
+//             num3 = data.guessCode[2]
+//             console.log(`${num1} ${num2} ${num3}`)
+//         }
+//         if (numbersToGuess === 4){
+//             num4 = data.guessCode[3]
+//             console.log(`${num1} ${num2} ${num3} ${num4}`)
+//         }
 
 
-        if (data.hints.oneCorrectAndWellPlaced !== undefined) {
-            hint2Text = "One Number is Correct and Well Placed"
-            hint2Arr = data.hints.oneCorrectAndWellPlaced
+//         if (data.hints.nothingCorrect !== undefined) {
+//             hint1Text = "Nothing Is Correct"
+//             hint1Arr = data.hints.nothingCorrect
+//         }
 
-        }
-        if (data.hints.oneCorrectButWronglyPlaced !== undefined) {
-            hint3Text = "One Number is Correct \nbut Wrong Placed\n";
-            hint3Arr = data.hints.oneCorrectButWronglyPlaced
 
-        }
-        if (data.hints.twoCorrectAndWellPlaced !== undefined) {
-            hint4Text = "Two Numbers are Correct and Well Placed"
-            hint4Arr = data.hints.twoCorrectAndWellPlaced
+//         if (data.hints.oneCorrectAndWellPlaced !== undefined) {
+//             hint2Text = "One Number is Correct and Well Placed"
+//             hint2Arr = data.hints.oneCorrectAndWellPlaced
 
-        }
-        if (data.hints.twoCorrectButWronglyPlaced !== undefined) {
-            hint5Text = "Two Numbers are Correct but Wrongly Placed"
-            hint5Arr = data.hints.twoCorrectButWronglyPlaced
+//         }
+//         if (data.hints.oneCorrectButWronglyPlaced !== undefined) {
+//             hint3Text = "One Number is Correct \nbut Wrong Placed\n";
+//             hint3Arr = data.hints.oneCorrectButWronglyPlaced
 
-        }
- }
+//         }
+//         if (data.hints.twoCorrectAndWellPlaced !== undefined) {
+//             hint4Text = "Two Numbers are Correct and Well Placed"
+//             hint4Arr = data.hints.twoCorrectAndWellPlaced
+
+//         }
+//         if (data.hints.twoCorrectButWronglyPlaced !== undefined) {
+//             hint5Text = "Two Numbers are Correct but Wrongly Placed"
+//             hint5Arr = data.hints.twoCorrectButWronglyPlaced
+
+//         }
+//  }
 
 const canvas = document.getElementById('canvas')
+// let numbersToGuess = ''
+function generateRandomData() {
+    // Generate a random number of digits to guess (between 2 and 4)
+    numbersToGuess = Math.floor(Math.random() * 3) + 2;
 
+    // Generate the random digits
+    let guessCode = [];
+    for (let i = 0; i < numbersToGuess; i++) {
+        guessCode.push(Math.floor(Math.random() * 10));
+    }
+    console.log(guessCode)
+    if (numbersToGuess >= 2){
+        num1 = guessCode[0]
+        num2 = guessCode[1]
+    } else if (numbersToGuess >= 3){
+        num3 = guessCode[2]
+    } else if (numbersToGuess === 4){
+        num4 = guessCode[3]
+    }
+
+    // Generate the hints
+// Generate the hints
+    hint1Text = "Nothing Is Correct";
+    hint1Arr = guessCode.slice(0, numbersToGuess).map((num, index) => (num + index + 1) % 10); // Change all digits to make them incorrect
+
+    hint2Text = "One Number is Correct and Well Placed";
+    hint2Arr = guessCode.slice(0, numbersToGuess).map((num, index) => index === 0 ? num : (num + index + 1) % 10); // Make the first digit correct and well placed
+
+    hint3Text = "One Number is Correct \nbut Wrong Placed\n";
+    hint3Arr = guessCode.slice(0, numbersToGuess).map((num, index) => index === 0 ? guessCode[1] : (num + index + 1) % 10); // Make the first digit correct but wrongly placed
+
+    hint4Text = "Two Numbers are Correct and Well Placed";
+    hint4Arr = guessCode.slice(0, numbersToGuess).map((num, index) => index < 2 ? num : (num + index + 1) % 10); // Make the first two digits correct and well placed
+
+}
+
+generateRandomData()
+
+// console.log(data)
 
 
 let guessBox1 = 0
@@ -132,7 +170,8 @@ let drawBoxes = () => {
     ctx.strokeStyle = 'limegreen'
     ctx.lineWidth = 2
     ctx.fillStyle = '#0a2403'
-
+    console.log(boxImg.complete)
+    console.log(numbersToGuess)
     
     if (boxImg.complete) {
         if(numbersToGuess === 2) {
@@ -538,7 +577,7 @@ let drawHints = () => {
         // console.log(hint2Arr)
         // console.log(hint3Arr)
         // console.log(hint4Arr)
-    
+        console.log(hint1Arr)
         if (hint1Arr) {
             drawHintOuterBox(hint1Arr, drawFrom, hint1Text);
         }
