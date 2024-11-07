@@ -93,8 +93,8 @@ let wrongGuesses = 0
 const canvas = document.getElementById('canvas')
 // let numbersToGuess = ''
 function generateRandomData() {
-    // Generate a random number of digits to guess (between 2 and 4)
-    numbersToGuess = Math.floor(Math.random() * 3) + 2;
+    // Generate a random number of digits to guess (between 3 and 4)
+    numbersToGuess = Math.floor(Math.random() * 2) + 3;
 
     // Generate the random digits
     let guessCode = [];
